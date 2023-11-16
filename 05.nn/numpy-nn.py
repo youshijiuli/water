@@ -1,4 +1,14 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+@File    :   test02.py
+@Author  :   Cat 
+@Version :   3.11
+"""
+
+
 import numpy as np
+from matplotlib import pyplot as plt
 
 
 def sigmoid(x):
@@ -27,7 +37,7 @@ class QurNeuralNetwork:
         # self.w4 = np.random.normal() * 0.01
         # self.w5 = np.random.normal() * 0.01
         # self.w6 = np.random.normal() * 0.01
-        
+
         self.w1 = np.random.randn() * 0.01
         self.w2 = np.random.randn() * 0.01
         self.w3 = np.random.randn() * 0.01
@@ -35,10 +45,12 @@ class QurNeuralNetwork:
         self.w5 = np.random.randn() * 0.01
         self.w6 = np.random.randn() * 0.01
 
-
         self.b1 = np.random.normal()
         self.b2 = np.random.normal()
         self.b3 = np.random.normal()
+
+        self.acc = []
+        self.loss = []
 
         self.lr = 0.1
 
@@ -50,16 +62,16 @@ class QurNeuralNetwork:
 
     def train(self, data, all_true_features):
         # 开始训练
-        epochs = 1000
+        epochs = 10000
         for epoch in range(epochs):
             for x, y_true in zip(data, all_true_features):
                 # 前向传播
-                h1 = self.w1 * x[0] + self.w2 * x[1] + self.b1
-                sum_h1 = sigmoid(h1)
-                h2 = self.w3 * x[0] + self.w4 * x[1] + self.b2
-                sum_h2 = sigmoid(h2)
-                o1 = self.w5 * h1 + self.w6 * h2 + self.b3
-                sum_o1 = sigmoid(o1)
+                sum_h1 = self.w1 * x[0] + self.w2 * x[1] + self.b1
+                h1 = sigmoid(sum_h1)
+                sum_h2 = self.w3 * x[0] + self.w4 * x[1] + self.b2
+                h2 = sigmoid(sum_h2)
+                sum_o1 = self.w5 * h1 + self.w6 * h2 + self.b3
+                o1 = sigmoid(sum_o1)
                 y_pred = o1
 
                 d_L_d_pred = -2 * (y_true - y_pred)
@@ -99,7 +111,21 @@ class QurNeuralNetwork:
             if epoch % 20 == 0:
                 y_preds = np.apply_along_axis(self.forward, 1, data)
                 loss = mse_loss(all_true_features, y_preds)
+                self.loss.append(loss)
+                self.acc.append(float(1 - loss))
                 print(f"第{epoch}轮次,loss:{loss}")
+
+                if loss < 1e-3:
+                    break
+
+        self.show_loss()
+
+    def show_loss(self):
+        plt.plot(np.array(self.acc), "r", label="acc", alpha=0.3)
+        plt.plot(np.array(self.loss), "b", label="loss", alpha=0.3)
+        plt.grid()
+        plt.legend()
+        plt.show()
 
 
 data = np.array(
@@ -112,6 +138,7 @@ network = QurNeuralNetwork()
 # 初始化我们的权重和偏置
 network.train(data, all_y_trues)
 
+
 # 进行预测
 emily = np.array([-13, -2.5])  # 128 pounds,63 inches
 frank = np.array([14, 2.5])  # 155 pounds, 68 inches
@@ -119,11 +146,8 @@ print("Emily: %.3f" % network.forward(emily))  # 0.961 -F
 print("Frank: %.3f" % network.forward(frank))  # .056 - M
 
 
-# loss下降的部署很明显
+# loss下降明显
 
-# 第0轮次,loss:0.4429933504085486
+# 第0轮次,loss:0.29203172135097805
 
-# 第990轮次,loss:0.2641334183722174
-
-
-# 但是它的那个下降到了0.0023  ?
+# 第9960轮次,loss:0.0001316402451741911
