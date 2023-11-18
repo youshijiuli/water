@@ -29,3 +29,15 @@
     1.过采样       复制指定类别的样本，在采样中重复 （50 -->  500）
     2.降采样      减少多样本类别的采样，随机使用部分
     3.调整样本权重     通过损失函数权重调整来体现
+
+
+
+常见报错：
+
+
+
+
+常见警告：
+"""C:\Users\hechang\Desktop\watermelon\guaml\Lib\site-packages\sklearn\ensemble\_base.py:156: FutureWarning: `base_estimator` was renamed to `estimator` in version 1.2 and will be removed in 1.4."""
+
+解决方案：

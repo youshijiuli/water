@@ -6,6 +6,7 @@
 @Version :   3.11
 """
 
+# logic回归  --  数字识别
 
 import numpy as np
 from sklearn.datasets import fetch_openml
@@ -31,4 +32,3 @@ print(
 
 # score:0.9255
 
-# 明天先把机器学习搞定  再来考虑 向量数据库
